@@ -123,10 +123,4 @@ while True:
     # programm is about to exit, let us cleanup
     atexit.register(cleanup())
 
-
-
-
-
-# on script ending remove file with: os.remove('filename'), alla udio files
-# while running it just replaces the new file
-# sudo apt-get install mpg123 to play audio files?
+# sudo apt-get install mpg123 to play audio files, its an alternative audio player
