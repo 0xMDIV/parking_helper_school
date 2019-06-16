@@ -7,7 +7,9 @@ import RPi.GPIO as GPIO
 # text to speech
 from gtts import gTTS
 
-
+# nobody like warnings
+GPIO.setwarnings(False)
+# set gpio mode
 GPIO.setmode(GPIO.BCM)
 
 # setup vars
@@ -30,6 +32,7 @@ back_left_echo = 23
 back_right_trigger = 24
 back_right_echo = 25
 
+# initialize sensors
 GPIO.setup(front_left_trigger, GPIO.OUT)
 GPIO.setup(front_left_echo, GPIO.IN)
 
@@ -70,10 +73,11 @@ def cleanup():
     os.remove("frontRight.mp3")
     os.remove("backLeft.mp3")
     os.remove("backRight.mp3")
+    GPIO.cleanup()
     print("Thanks for using our Solution")
 
 
-
+# main loop
 while True:
     front_left_distance = round(distance(front_left_trigger, front_left_echo), 2)
     front_right_distance = round(distance(front_right_trigger, front_right_echo), 2)
@@ -116,7 +120,7 @@ while True:
         time.sleep(3)
         audio_playing = False
 
-
+    # programm is about to exit, let us cleanup
     atexit.register(cleanup())
 
 
