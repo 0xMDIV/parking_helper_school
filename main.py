@@ -70,6 +70,7 @@ def cleanup():
     os.remove("frontRight.mp3")
     os.remove("backLeft.mp3")
     os.remove("backRight.mp3")
+    print("Thanks for using our Solution")
 
 
 
@@ -116,6 +117,7 @@ while True:
         audio_playing = False
 
 
+    atexit.register(cleanup())
 
 
 
