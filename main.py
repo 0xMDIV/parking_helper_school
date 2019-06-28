@@ -1,11 +1,14 @@
 # import libs
 import time
 import os
-import subprocess
 import atexit
 import RPi.GPIO as GPIO
 # text to speech
 from gtts import gTTS
+
+tts = gTTS("Hallo Herr Kirchner, willkommen bei Ihrem persöhnlichen ParkAssistenten", lang="de")
+tts.save('startup.mp3')
+os.system("mpg123 startup.mp3")
 
 # nobody like warnings
 GPIO.setwarnings(False)
@@ -13,8 +16,6 @@ GPIO.setwarnings(False)
 GPIO.setmode(GPIO.BCM)
 
 # setup vars
-start_time = time.time()
-end_time = time.time()
 time_difference = 0
 distance2 = 0.0
 audio_playing = False
@@ -80,47 +81,58 @@ def cleanup():
 # main loop
 while True:
     front_left_distance = round(distance(front_left_trigger, front_left_echo), 2)
-    front_right_distance = round(distance(front_right_trigger, front_right_echo), 2)
-    back_left_distance = round(distance(back_left_trigger, back_left_echo), 2)
-    back_right_distance = round(distance(back_right_trigger, back_right_echo), 2)
+    time.sleep(0.125)
+    front_right_distance = 2#round(distance(front_right_trigger, front_right_echo), 2)
+    time.sleep(0.125)
+    back_left_distance = 2#round(distance(back_left_trigger, back_left_echo), 2)
+    time.sleep(0.125)
+    back_right_distance = 2#round(distance(back_right_trigger, back_right_echo), 2)
+    time.sleep(0.125)
 
-    if front_left_distance < 1.00 and audio_playing == False:
+    print("FL: %s" % front_left_distance)
+
+    if front_left_distance < 30.00 and audio_playing == False:
         # play Sound
         audio_playing = True
-        tts_frontLeft = gTTS("Vorne Links: " + front_left_distance, lang="de")
+        tts_frontLeft = gTTS("Vorne Links in cm: %s " % front_left_distance, lang="de")
         tts_frontLeft.save('frontleft.mp3')
         os.system("mpg123 frontleft.mp3")
         time.sleep(3)
+        os.system("pkill mpg123")
+        front_left_distance = round(distance(front_left_trigger, front_left_echo), 2)
         audio_playing = False
-    
-    if front_right_distance < 1.00 and audio_playing == False:
+
+    if front_right_distance < 30.00 and audio_playing == False:
         # play Sound
         audio_playing = True
-        tts_frontRight = gTTS("Vorne Rechts: " + front_right_distance, lang="de")
+        tts_frontRight = gTTS("Vorne Rechts in cm: " + front_right_distance, lang="de")
         tts_frontRight.save('frontRight.mp3')
         os.system("mpg123 frontRight.mp3")
         time.sleep(3)
+        os.system("pkill mpg123")
         audio_playing = False
 
-    if back_left_distance < 1.00 and audio_playing == False:
+    if back_left_distance < 30.00 and audio_playing == False:
         # play Sound
         audio_playing = True
-        tts_backLeft = gTTS("Hinten Links: " + back_left_distance, lang="de")
+        tts_backLeft = gTTS("Hinten Links in cm: " + back_left_distance, lang="de")
         tts_backLeft.save('backLeft.mp3')
         os.system("mpg123 backLeft.mp3")
         time.sleep(3)
+        os.system("pkill mpg123")
         audio_playing = False
 
-    if back_right_distance < 1.00 and audio_playing == False:
+    if back_right_distance < 30.00 and audio_playing == False:
         # play Sound
         audio_playing = True
-        tts_backRight = gTTS("Hinten Rechts: " + back_right_distance, lang="de")
+        tts_backRight = gTTS("Hinten Rechts in cm: " + back_right_distance, lang="de")
         tts_backRight.save('backRight.mp3')
         os.system("mpg123 backRight.mp3")
         time.sleep(3)
+        os.system("pkill mpg123")
         audio_playing = False
 
     # programm is about to exit, let us cleanup
-    atexit.register(cleanup())
+    # atexit.register(cleanup())
 
 # sudo apt-get install mpg123 to play audio files, its an alternative audio player
